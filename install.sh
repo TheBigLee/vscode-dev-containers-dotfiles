@@ -1,12 +1,18 @@
-#!/usr/bin/env zsh
-export PATH="$HOME/.local/bin:$PATH"
+#!/bin/bash
 
-mkdir -p ${HOME}/.local/bin
+nix --extra-experimental-features "nix-command flakes" run home-manager/master -- init
 
-echo "Install exa"
-export EXAVERSION="0.10.1"
-curl -L -o exa.zip https://github.com/ogham/exa/releases/download/v${EXAVERSION}/exa-linux-x86_64-v${EXAVERSION}.zip && unzip exa.zip -d exa && install -c -m 0755 exa/bin/exa ${HOME}/.local/bin && rm -rf exa && rm exa.zip
+rm ~/.config/home-manager/home.nix
 
-echo "Install chezmoi"
-sh -c "$(curl -fsLS get.chezmoi.io)" -- -b $HOME/.local/bin init --apply git@github.com:TheBigLee/dot-chezmoi.git
+git clone https://github.com/TheBigLee/nix-config.git 
+
+cd ~/.config/home-manager || exit
+git pull || true
+cd || exit
+
+nix --extra-experimental-features "nix-command flakes" run home-manager/master -- --flake ~/.config/home-manager#devcontainer@devcontainer switch -L -b backup --extra-experimental-features "nix-command flakes"
+
+sudo apt update && sudo apt install python3-yaml -y
+
+sudo chsh -s /usr/bin/zsh $USER
 
