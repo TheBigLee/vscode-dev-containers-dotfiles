@@ -4,7 +4,7 @@ nix --extra-experimental-features "nix-command flakes" run home-manager/master -
 
 rm ~/.config/home-manager/home.nix
 
-git clone https://github.com/TheBigLee/nix-config.git 
+git clone https://github.com/TheBigLee/nix-config.git ~/.config/home-manager
 
 cd ~/.config/home-manager || exit
 git pull || true
